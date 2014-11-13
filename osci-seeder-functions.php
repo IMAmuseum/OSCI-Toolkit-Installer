@@ -5,114 +5,108 @@ require_once DRUPAL_ROOT . '/includes/install.inc';
 require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
 require_once DRUPAL_ROOT . '/includes/password.inc';
 
+class osciInstaller
+{
+	public $db;
+	public $dbFile = 'osci-toolkit.sql';
 
-function seedTables($database) {
-	$filename = 'osci-toolkit.sql';
-	// Database name
-	$mysql_database = $database['database'];
-	// MySQL username
-	$mysql_username = $database['username'];
-	// MySQL password
-	$mysql_password = $database['password'];
-
-	// Advanced Options
-	// MySQL host
-	$mysql_host = $database['host'];
-	// MySQL port
-	$mysql_port = $database['port'];
-	// MySQL prefix
-	$mysql_prefix = $database['prefix'];
-	// if port is set add it to host
-	if ($mysql_port) {
-		$mysql_host = $mysql_host . ":" . $mysql_port;
-	}
-	// if prefix is set add it to database
-	if ($mysql_prefix) {
-		$mysql_database = $mysql_prefix . "_" . $mysql_database;
-	}
-
-	// Connect to MySQL server
-	mysql_connect($mysql_host, $mysql_username, $mysql_password) or die('Error connecting to MySQL server: ' . mysql_error());
-	// Select database
-	mysql_select_db($mysql_database) or die('Error selecting MySQL database: ' . mysql_error());
-
-	// Temporary variable, used to store current query
-	$templine = '';
-	// Read in entire file
-	$lines = file($filename);
-	// Loop through each line
-	foreach ($lines as $line)
+	public function __construct($settings)
 	{
-		// Skip it if it's a comment
-		if (substr($line, 0, 2) == '--' || $line == '')
-			continue;
+		// Database name
+		$mysql_database = $settings['mysql']['database'];
+		// MySQL username
+		$mysql_username = $settings['mysql']['username'];
+		// MySQL password
+		$mysql_password = $settings['mysql']['password'];
 
-		// Add this line to the current segment
-		$templine .= $line;
-		// If it has a semicolon at the end, it's the end of the query
-		if (substr(trim($line), -1, 1) == ';')
-		{
-			// Perform the query
-			mysql_query($templine) or print('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
-			// Reset temp variable to empty
-			$templine = '';
+		// Advanced Options
+		// MySQL host
+		$mysql_host = $settings['mysql']['host'];
+		// MySQL port
+		$mysql_port = $settings['mysql']['port'];
+		// MySQL prefix
+		$mysql_prefix = $settings['mysql']['prefix'];
+		// if port is set add it to host
+		if ($mysql_port) {
+			$mysql_host = $mysql_host . ":" . $mysql_port;
 		}
+		// // if prefix is set add it to database
+		// if ($mysql_prefix) {
+		// 	$mysql_database = $mysql_prefix . "_" . $mysql_database;
+		// }
+
+		$pdo = 'mysql:host=' . $mysql_host . ';port=' . $mysql_port . ';dbname=' . $mysql_database;
+		
+		$this->db = new PDO($pdo, $mysql_username, $mysql_password);
+		$this->settings = $settings;
 	}
 
-	return 1;
-}
+	public function seedTables() {
 
-function rewriteSettings($database) {
-	$settings['databases'] = array(
-	'value'    => array('default' => array('default' => $database)),
-	'required' => TRUE,
-	);
-	$settings['drupal_hash_salt'] = array(
-	'value'    => drupal_random_key(),
-	'required' => TRUE,
-	);
+		// Temporary variable, used to store current query
+		$templine = '';
+		// Read in entire file
+		$lines = file($this->dbFile);
+		// Loop through each line
+		foreach ($lines as $line)
+		{
+			// Skip it if it's a comment
+			if (substr($line, 0, 2) == '--' || $line == '')
+				continue;
 
-	drupal_rewrite_settings($settings);
+			// Add this line to the current segment
+			$templine .= $line;
+			// If it has a semicolon at the end, it's the end of the query
+			if (substr(trim($line), -1, 1) == ';')
+			{
+				// Perform the query
+				try {
+					$this->db->query($templine);
+				} catch(Exception $e) {
+					throw Exception('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
+				}
+				// Reset temp variable to empty
+				$templine = '';
+			}
+		}
 
-	return 1;
-}
-
-
-function updatePassword($database, $name, $mail, $password) {
-
-	$hashword = user_hash_password($password);
-
-	// Database name
-	$mysql_database = $database['database'];
-	// MySQL username
-	$mysql_username = $database['username'];
-	// MySQL password
-	$mysql_password = $database['password'];
-
-	// Advanced Options
-	// MySQL host
-	$mysql_host = $database['host'];
-	// MySQL port
-	$mysql_port = $database['port'];
-	// MySQL prefix
-	$mysql_prefix = $database['prefix'];
-	// if port is set add it to host
-	if ($mysql_port) {
-		$mysql_host = $mysql_host . ":" . $mysql_port;
-	}
-	// if prefix is set add it to database
-	if ($mysql_prefix) {
-		$mysql_database = $mysql_prefix . "_" . $mysql_database;
+		return 1;
 	}
 
-	// Connect to MySQL server
-	mysql_connect($mysql_host, $mysql_username, $mysql_password) or die('Error connecting to MySQL server: ' . mysql_error());
-	// Select database
-	mysql_select_db($mysql_database) or die('Error selecting MySQL database: ' . mysql_error());
+	function rewriteSettings() {
+		$settings['databases'] = array(
+			'value'    => array('default' => array('default' => $this->settings['mysql'])),
+			'required' => TRUE,
+		);
+		$settings['drupal_hash_salt'] = array(
+			'value'    => drupal_random_key(),
+			'required' => TRUE,
+		);
 
-	$sql = "UPDATE users SET name='$name', pass='$hashword', mail='$mail' WHERE uid=1";
+		drupal_rewrite_settings($settings);
 
-	mysql_query($sql) or print('Error performing query \'<strong>' . $sql . '\': ' . mysql_error() . '<br /><br />');
+		return 1;
+	}
 
-	return 1;
+
+	function updatePassword() {
+
+		$hashword = user_hash_password($this->settings['password']);
+
+		$sql = "UPDATE 
+				users 
+			SET 
+				name='" . $this->settings["name"] . "', 
+				pass='$hashword', 
+				mail='" . $this->settings['mail'] . "' WHERE uid=1
+			";
+
+		try {
+			$this->db->query($sql);
+		} catch (Exception $e) {
+			throw Exception('Error performing query ' . $sql . ': ' . mysql_error());
+		}
+
+		return 1;
+	}
 }

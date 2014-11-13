@@ -103,7 +103,7 @@ $site_url = rtrim($site_url, '/');
 							<div class="form-group" class="hidden">
 								<label for="db_prefix" class="col-sm-3 control-label">Table Prefix</label>
 								<div class="col-sm-9">
-									<input type="password" class="form-control" id="db_prefix" name="mysql[prefix]">
+									<input type="text" class="form-control" id="db_prefix" name="mysql[prefix]">
 								</div>
 							</div>
 

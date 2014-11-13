@@ -5,16 +5,17 @@ if(isset($_POST['submit'])) {
 	require_once 'osci-seeder-functions.php';
 	require_once 'osci-cleaner.php';
 
-	$database = $_POST['mysql'];
-	$name = $_POST['name'];
-	$mail = $_POST['mail'];
-	$password = $_POST['password'];
+	$settings = array(
+		'mysql'		=> $_POST['mysql'],
+		'name'		=> $_POST['name'],
+		'mail'		=> $_POST['mail'],
+		'password'	=> $_POST['password'],
+	);	
 
-	$seeder = seedTables($database);
-
-	$setter = rewriteSettings($database);
-
-	$profiler = updatePassword($database, $name, $mail, $password);
+	$installer 	= new osciInstaller($settings);
+	$seeder 	= $installer->seedTables();
+	$setter 	= $installer->rewriteSettings();
+	$profiler 	= $installer->updatePassword();
 
 	if($seeder && $setter && $profiler) {
 		cleanupInstaller();
