@@ -155,6 +155,8 @@ $( document ).ready(function() {
 		if ( data == 1 ) {
 			$( ".zipped" ).html( '' );
 			$( "#seeder-form").removeClass('hidden');
+		} else {
+			$( ".zipped" ).html(data);
 		}
 	});
 

@@ -31,12 +31,11 @@ class osciInstaller
 			$mysql_host = $mysql_host . ":" . $mysql_port;
 		}
 		// // if prefix is set add it to database
-		// if ($mysql_prefix) {
-		// 	$mysql_database = $mysql_prefix . "_" . $mysql_database;
-		// }
+		if ($mysql_prefix) {
+			$mysql_database = $mysql_prefix . "_" . $mysql_database;
+		}
 
 		$pdo = 'mysql:host=' . $mysql_host . ';port=' . $mysql_port . ';dbname=' . $mysql_database;
-		
 		$this->db = new PDO($pdo, $mysql_username, $mysql_password);
 		$this->settings = $settings;
 	}
@@ -93,11 +92,11 @@ class osciInstaller
 
 		$hashword = user_hash_password($this->settings['password']);
 
-		$sql = "UPDATE 
-				users 
-			SET 
-				name='" . $this->settings["name"] . "', 
-				pass='$hashword', 
+		$sql = "UPDATE
+				users
+			SET
+				name='" . $this->settings["name"] . "',
+				pass='$hashword',
 				mail='" . $this->settings['mail'] . "' WHERE uid=1
 			";
 
