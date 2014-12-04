@@ -10,7 +10,7 @@ if(isset($_POST['submit'])) {
 		'name'		=> $_POST['name'],
 		'mail'		=> $_POST['mail'],
 		'password'	=> $_POST['password'],
-	);	
+	);
 
 	$installer 	= new osciInstaller($settings);
 	$seeder 	= $installer->seedTables();
