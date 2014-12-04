@@ -15,7 +15,10 @@
 		}
 	}
 
-	echo "1"
+	//unzip has already occurred
+	if (file_exists("index.php")) {
+		echo "1";
+	}
 
 ?>
 
