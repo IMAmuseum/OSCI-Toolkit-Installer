@@ -13,5 +13,5 @@
 -  cd bulid
 	- bash build-dependencies.sh ../../../..
 - cd ../../../.. (should be in main osci-install folder)
-	- tar -cvzf osci-install.tgz .
-- move osci-install.tgz  to main directory
+	- zip -r osci-install.zip .
+- move osci-install.zip  to main directory
