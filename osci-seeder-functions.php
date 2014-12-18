@@ -1,9 +1,6 @@
 <?php
 
 define('DRUPAL_ROOT', getcwd());
-require_once DRUPAL_ROOT . '/includes/install.inc';
-require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
-require_once DRUPAL_ROOT . '/includes/password.inc';
 
 class osciInstaller
 {
@@ -73,6 +70,10 @@ class osciInstaller
 	}
 
 	function rewriteSettings() {
+
+		require_once DRUPAL_ROOT . '/includes/install.inc';
+		require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
+
 		$settings['databases'] = array(
 			'value'    => array('default' => array('default' => $this->settings['mysql'])),
 			'required' => TRUE,
@@ -89,6 +90,8 @@ class osciInstaller
 
 
 	function updatePassword() {
+
+		require_once DRUPAL_ROOT . '/includes/password.inc';
 
 		$hashword = user_hash_password($this->settings['password']);
 
@@ -108,4 +111,5 @@ class osciInstaller
 
 		return 1;
 	}
+
 }
