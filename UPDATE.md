@@ -1,6 +1,6 @@
 #osci-toolkit-install update
 - git clone https://github.com/IMAmuseum/OSCI-Toolkit-Installer.git .
-- unzip osci-install.tgz
+- unzip osci-install.zip
 - cd osci-install/frontend folder
 	- git stash
 	- git pull
@@ -13,5 +13,5 @@
 -  cd bulid
 	- bash build-dependencies.sh ../../../..
 - cd ../../../.. (should be in main osci-install folder)
-	- zip -r osci-install.zip .
+	- zip -r --symlinks osci-install.zip .
 - move osci-install.zip  to main directory
