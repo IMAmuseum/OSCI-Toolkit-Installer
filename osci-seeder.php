@@ -13,7 +13,7 @@ if(isset($_POST['submit'])) {
 	);
 
 	$installer 	= new osciInstaller($settings);
-	$seeder 	= $installer->seedTables();
+	$seeder 	= $installer->seedTables('osci-toolkit.sql');
 	$setter 	= $installer->rewriteSettings();
 	$profiler 	= $installer->updatePassword();
 

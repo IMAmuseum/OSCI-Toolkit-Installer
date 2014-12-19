@@ -5,7 +5,6 @@ define('DRUPAL_ROOT', getcwd());
 class osciInstaller
 {
 	public $db;
-	public $dbFile = 'osci-toolkit.sql';
 
 	public function __construct($settings)
 	{
@@ -37,12 +36,12 @@ class osciInstaller
 		$this->settings = $settings;
 	}
 
-	public function seedTables() {
+	public function seedTables($dbFile) {
 
 		// Temporary variable, used to store current query
 		$templine = '';
 		// Read in entire file
-		$lines = file($this->dbFile);
+		$lines = file($dbFile);
 		// Loop through each line
 		foreach ($lines as $line)
 		{
@@ -89,18 +88,24 @@ class osciInstaller
 	}
 
 
-	function updatePassword() {
+	function updatePassword($name = NULL, $password = NULL, $email = NULL, $uid = 1) {
 
 		require_once DRUPAL_ROOT . '/includes/password.inc';
 
-		$hashword = user_hash_password($this->settings['password']);
+		if ($name == NULL || $password == NULL || $email == NULL) {
+			$name = $this->settings["name"];
+			$password = $this->settings['password'];
+			$email = $this->settings['mail'];
+		}
+
+		$hashword = user_hash_password($password);
 
 		$sql = "UPDATE
 				users
 			SET
-				name='" . $this->settings["name"] . "',
+				name='" . $name . "',
 				pass='$hashword',
-				mail='" . $this->settings['mail'] . "' WHERE uid=1
+				mail='" . $email . "' WHERE uid='" . $uid . "'
 			";
 
 		try {
