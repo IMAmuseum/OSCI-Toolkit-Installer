@@ -18,7 +18,7 @@ if(isset($_POST['submit'])) {
 	$profiler 	= $installer->updatePassword();
 
 	if($seeder && $setter && $profiler) {
-		//cleanupInstaller();
+		cleanupInstaller();
 		header('Location: /');
 	}
 
