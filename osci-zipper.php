@@ -25,8 +25,10 @@
 		}
 	}
 
+	shell_exec('bash osci-build.sh');
+
 	//unzip has already occurred
-	if (file_exists("index.php")) {
+	if (file_exists("index.php") && file_exists("/frontend/devel.html")) {
 		$status = "1";
 	}
 
