@@ -129,7 +129,7 @@ $site_url = rtrim($site_url, '/');
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="password_again" class="col-sm-3 control-label">Confrim Password *</label>
+								<label for="password_again" class="col-sm-3 control-label">Confirm Password *</label>
 								<div class="col-sm-9">
 									<input type="password" class="form-control" id="password_again" name="password_again">
 								</div>
