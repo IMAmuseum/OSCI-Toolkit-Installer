@@ -135,6 +135,21 @@ $site_url = rtrim($site_url, '/');
 								</div>
 							</div>
 							<div class="form-group">
+								<label class="col-sm-3 control-label">Sample Publication</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="samples" id="sample0" value="none" checked>
+										No Sample
+									</label>
+								</div>
+								<div class="col-sm-offset-3 radio">
+									<label>
+										<input type="radio" name="samples" id="sample1" value="alice">
+										Alice's Adventures in Wonderland
+									</label>
+								</div>
+							</div>
+							<div class="form-group">
 								<div class="col-sm-offset-3 col-sm-9">
 									<input type="submit" id="profiler" class="btn btn-default" name="submit" value="Submit">
 								</div>
