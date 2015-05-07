@@ -87,7 +87,6 @@ class osciInstaller
 		return 1;
 	}
 
-
 	function updatePassword($name = NULL, $password = NULL, $email = NULL, $uid = 1) {
 
 		require_once DRUPAL_ROOT . '/includes/password.inc';
@@ -112,6 +111,31 @@ class osciInstaller
 			$this->db->query($sql);
 		} catch (Exception $e) {
 			throw Exception('Error performing query ' . $sql . ': ' . mysql_error());
+		}
+
+		return 1;
+	}
+
+	function moveSampleAssets($sample) {
+		$sample_path = 'osci-assets/samples/' . $sample;
+
+		$image_assets_files = scandir($sample_path . '/image_assets');
+		$image_styles_files = scandir($sample_path . '/image_styles');
+
+		$image_assets_path = 'sites/default/files/image_assets/';
+		$image_styles_path = 'sites/default/files/styles/medium/public/image_assets/';
+
+		mkdir($image_assets_path, 755, true);
+		mkdir($image_styles_path, 755, true);
+
+		foreach ($image_assets_files as $file) {
+			if (in_array($file, array(".",".."))) continue;
+			copy($sample_path . '/image_assets/' . $file, $image_assets_path . $file);
+		}
+
+		foreach ($image_styles_files as $file) {
+			if (in_array($file, array(".",".."))) continue;
+			copy($sample_path . '/image_styles/' . $file, $image_styles_path . $file);
 		}
 
 		return 1;

@@ -10,10 +10,18 @@ if(isset($_POST['submit'])) {
 		'name'		=> $_POST['name'],
 		'mail'		=> $_POST['mail'],
 		'password'	=> $_POST['password'],
+		'sample'	=> $_POST['samples'],
 	);
 
 	$installer 	= new osciInstaller($settings);
-	$seeder 	= $installer->seedTables('osci-toolkit.sql');
+	// check if user wants to use a sample publication
+	if ($settings['sample'] == 'none') {
+		$seeder = $installer->seedTables('osci-toolkit.sql');
+		$assets = 1;
+	} else {
+		$seeder = $installer->seedTables('osci-assets/samples/' . $settings['sample'] . '/osci-sample.sql');
+		$assets = $installer->moveSampleAssets($settings['sample']);
+	}
 	$setter 	= $installer->rewriteSettings();
 	$profiler 	= $installer->updatePassword();
 
