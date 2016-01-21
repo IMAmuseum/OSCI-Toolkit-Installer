@@ -4521,13 +4521,13 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-set autocommit=0;
-INSERT INTO `users` VALUES (0,'','','','','',NULL,0,0,0,0,NULL,'',0,'',NULL),(1,'admin','$S$DkOWRPaw2Ea.WDNM9Gnp3JkAaTvFrVslXrBYfF1cJS43u445ohUO','admin@admin.com','','',NULL,1429635862,1429729428,1429635927,1,'America/New_York','',0,'admin@admin.com','b:0;');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-commit;
+-- LOCK TABLES `users` WRITE;
+-- /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+-- set autocommit=0;
+-- INSERT INTO `users` VALUES (0,'','','','','',NULL,0,0,0,0,NULL,'',0,'',NULL),(1,'admin','$S$DkOWRPaw2Ea.WDNM9Gnp3JkAaTvFrVslXrBYfF1cJS43u445ohUO','admin@admin.com','','',NULL,1429635862,1429729428,1429635927,1,'America/New_York','',0,'admin@admin.com','b:0;');
+-- /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+-- UNLOCK TABLES;
+-- commit;
 
 --
 -- Table structure for table `users_roles`

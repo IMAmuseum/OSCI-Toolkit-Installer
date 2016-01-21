@@ -87,7 +87,7 @@ class osciInstaller
 		return 1;
 	}
 
-	function updatePassword($name = NULL, $password = NULL, $email = NULL, $uid = 1) {
+	function updatePassword($name = NULL, $password = NULL, $email = NULL) {
 
 		require_once DRUPAL_ROOT . '/includes/password.inc';
 
@@ -99,16 +99,17 @@ class osciInstaller
 
 		$hashword = user_hash_password($password);
 
-		$sql = "UPDATE
-				users
-			SET
-				name='" . $name . "',
-				pass='$hashword',
-				mail='" . $email . "' WHERE uid='" . $uid . "'
-			";
+		$sql = "
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `users` VALUES (0,'','','','','',NULL,0,0,0,0,NULL,'',0,'',NULL),(1,'$name','$hashword','$email','','',NULL,1429635862,1429645097,1429635927,1,'America/New_York','',0,'$email','b:0;');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;";
 
 		try {
-			$this->db->query($sql);
+			$this->db->exec($sql);
 		} catch (Exception $e) {
 			throw Exception('Error performing query ' . $sql . ': ' . mysql_error());
 		}

@@ -23,7 +23,8 @@ if(isset($_POST['submit'])) {
 		$assets = $installer->moveSampleAssets($settings['sample']);
 	}
 	$setter 	= $installer->rewriteSettings();
-	$profiler 	= $installer->updatePassword();
+
+	$profiler 	= $installer->updatePassword($settings['name'], $settings['password'], $settings['mail']);
 
 	if($seeder && $setter && $profiler) {
 		cleanupInstaller();
